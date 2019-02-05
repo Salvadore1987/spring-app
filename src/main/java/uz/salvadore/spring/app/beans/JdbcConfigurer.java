@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 // Класс для настройки соединения с БД.
+@EnableTransactionManagement
 @Configuration
 @PropertySource("classpath:application.properties")
 public class JdbcConfigurer {
@@ -67,6 +70,13 @@ public class JdbcConfigurer {
         properties.setProperty("auto-commit", autoCommit);
         properties.setProperty("type", dataSourceType);
         return properties;
+    }
+
+    @Bean
+    public DataSourceTransactionManager txManager() {
+        DataSourceTransactionManager manager = new DataSourceTransactionManager();
+        manager.setDataSource(dataSource());
+        return manager;
     }
 
 
